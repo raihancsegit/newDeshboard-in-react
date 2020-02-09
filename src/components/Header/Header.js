@@ -244,7 +244,7 @@ export default function Header(props) {
           <div className={classes.profileMenuUser}>
             <Typography variant="h4" weight="medium">
             
-             raihanislam
+             Admin
             </Typography>
             <Typography
               className={classes.profileMenuLink}
@@ -252,7 +252,7 @@ export default function Header(props) {
               color="primary"
               href="https://raihan.com"
             >
-              raihan.com
+             
             </Typography>
           </div>
           

@@ -25,6 +25,7 @@ class Users extends React.Component {
     }
 
     
+    
   }
 
 
@@ -43,7 +44,7 @@ class Users extends React.Component {
         isUser:true,
         
       })
-    
+
 
       });
 
@@ -53,7 +54,7 @@ class Users extends React.Component {
     //  const UserClass = Parse.Object.extend('User');
     //  const query = new Parse.Query(UserClass);
 
-    console.log(objectid);
+    //console.log(objectid);
     // here you put the objectId that you want to update
     // query.get(objectid).then((object) => {
     //   object.set('isUserBan', false);
@@ -78,15 +79,17 @@ class Users extends React.Component {
       //user.set('gender', 'female');
       user.set('isUserBan', false);
       // Saves the user with the updated data
-      user.save().then((response) => {
+      console.log('Current User record is ' + JSON.stringify(Parse.User.current()));
+      user.save({lastLogin:new Date()}, { id_token: user.get("sessionToken") }).then((response) => {
+        
         this.setState({isUser:false})
         toast.configure({
           autoClose: 2000,
           draggable: false,
           //etc you get the idea
         });
-        toast("User Deactive");
-        window.location.reload();
+        toast("User Deactive Successfully")
+        //window.location.reload();
         // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
         // console.log('Updated user', response);
       }).catch((error) => {
@@ -109,15 +112,18 @@ class Users extends React.Component {
       //user.set('gender', 'female');
       user.set('isUserBan', true);
       // Saves the user with the updated data
-      user.save().then((response) => {
+      console.log('Current User record is ' + JSON.stringify(Parse.User.current()));
+      user.save({lastLogin:new Date()}, { id_token: user.get("sessionToken") }).then((response) => {
+        //localStorage.getItem('id_token');
+        //{lastLogin:new Date()}, { sessionToken: user.get("sessionToken") }
         this.setState({isUser:true})
         toast.configure({
           autoClose: 2000,
           draggable: false,
           //etc you get the idea
         });
-        toast("User Active");
-        window.location.reload();
+        toast("User Active Successfully");
+        //window.location.reload();
         // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
         // console.log('Updated user', response);
       }).catch((error) => {
@@ -131,9 +137,47 @@ class Users extends React.Component {
 
   
 
-  changeUserRole = (userId) => {
-    //console.log(userId);
-  }
+  // changeUserRole = (userId) => {
+  //   console.log(userId);
+  // }
+
+  handleClick = (e, data) => {
+    //console.log(data.objectId);
+    const User = new Parse.User();
+    const query = new Parse.Query(User);
+
+    query.get(data.objectId).then((user) => {
+      // Updates the data we want
+      //user.set('gender', 'female');
+      user.set('userType', e.target.value);
+      // Saves the user with the updated data
+      console.log('Current User record is ' + JSON.stringify(Parse.User.current()));
+      user.save().then((response) => {
+        
+        this.setState({role:e.target.value});
+        toast.configure({
+          autoClose: 2000,
+          draggable: false,
+          //etc you get the idea
+        });
+        toast("Change User Role");
+        //window.location.reload();
+        // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
+        // console.log('Updated user', response);
+      }).catch((error) => {
+        if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
+        console.error('Error while updating user', error);
+      });
+     });
+
+
+    
+    //console.log(data.objectId);
+    // if(data.objectId){
+    //   this.setState({role:e.target.value});
+    // }
+    
+  };
 
   
 
@@ -141,14 +185,14 @@ class Users extends React.Component {
     
       let users = this.state.users;
       //let isUser = this.state.isUser;
-      console.log(users);
-      //console.log("data");
+      //console.log(users);
+  
 
     const userDataTable = 
       users.map((data,i) =>
       
       [
-      <img style={{width:'50px'}} src={data.photo.url}/>,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,data.isUserBan == true ? "Active" : "Deactive",
+      <img style={{width:'50px'}} src='' />,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,data.isUserBan == true ? "Active" : "Deactive",
       <button
          onClick={()=>this.handleChangeDea(data.objectId)}
        >Deactive</button>,
@@ -159,10 +203,10 @@ class Users extends React.Component {
        <Select
           labelId="demo-simple-select-filled-label"
           id="demo-simple-select-filled"
-          value=""
-          onChange={this.changeUserRole(data.objectId)}
+          value={data.userType}
+          onChange={((e) => this.handleClick(e, data))}
         >
-          <MenuItem value="">
+          <MenuItem value="none">
             <em>None</em>
           </MenuItem>
           <MenuItem value="user">User</MenuItem>

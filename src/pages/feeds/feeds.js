@@ -41,28 +41,13 @@ class Feeds extends React.Component {
       });
 
 
-      var pipeline = [
-        { group: { objectId: null, total: { $sum: '$likeCount' } } }
-      ];
-      var ex = new Parse.Query("Post");
-      ex.aggregate(pipeline)
-        .then(function(results) {
-          //const je = JSON.stringify(results);
-          //const total = JSON.parse(je);
-          console.log(results[0].total);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-
-
   }
 
   handleChange = (objectid) => {
     const MyCustomClass = Parse.Object.extend('Post');
     const query = new Parse.Query(MyCustomClass);
     // here you put the objectId that you want to update
-    query.get('MlZ8y2BBIy').then((object) => {
+    query.get(objectid).then((object) => {
       object.set('dislikeCount', 1);
       object.save().then((response) => {
         // You can use the "get" method to get the value of an attribute

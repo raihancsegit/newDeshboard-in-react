@@ -57,20 +57,22 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
     Parse.User.logIn(login,password).then((user) => {
       // Do stuff after successful login
       // if (typeof document !== 'undefined') document.write(`Logged in user: ${JSON.stringify(user)}`);
-      // console.log('Logged in user', user);
+       console.log('Logged in user', user);
 
       if (!!login && !!password) {
         setTimeout(() => {
-          localStorage.setItem('id_token', 1)
-          setError(null)
-          setIsLoading(false)
-          dispatch({ type: 'LOGIN_SUCCESS' })
-
-          const currentUser = Parse.User.current();
-          const userJeson = JSON.stringify(currentUser);
-          const getuserName = JSON.parse(userJeson);
-    
-          history.push('/app/dashboard')
+          var currentUser = Parse.User.current(); 
+          currentUser.fetch().then(function(fetchedUser) {
+            var name = fetchedUser.getUsername();
+            //alert(name)
+            localStorage.setItem('id_token', 1)
+              setError(null)
+              setIsLoading(false)
+              dispatch({ type: 'LOGIN_SUCCESS' })
+              history.push('/app/dashboard')
+          });
+              
+          
           
           
         }, 1000);
