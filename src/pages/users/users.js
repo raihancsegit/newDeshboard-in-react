@@ -14,6 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Button from '@material-ui/core/Button';
 var Parse = require('parse/node');
 
 class Users extends React.Component {
@@ -21,58 +22,42 @@ class Users extends React.Component {
     super(props);
     this.state = {
       users:[],
-      role:'user', 
+      role:'user',
     }
 
-    
-    
+  
   }
 
 
   componentDidMount(){
 
+    this.getData();
+
+  }
+  getData(){
     const MyCustomClass = Parse.Object.extend('User');
-      const query = new Parse.Query(MyCustomClass);
-      query.find().then((results) => {
-        
-       const userJeson = JSON.stringify(results);
-       const user = JSON.parse(userJeson);
-       //console.log(user);
+    const query = new Parse.Query(MyCustomClass);
+    //query.include('userType');
+    query.find().then((results) => {
       
-      this.setState({
-        users:user,
-        isUser:true,
-        
-      })
+     const userJeson = JSON.stringify(results);
+     const user = JSON.parse(userJeson);
+     //console.log(user);
+    
+    this.setState({
+      users:user,
+      isUser:true,
+      
+    })
 
-
-      });
+    });
 
   }
 
   handleChangeDea = (objectid) => {
-    //  const UserClass = Parse.Object.extend('User');
-    //  const query = new Parse.Query(UserClass);
-
-    //console.log(objectid);
-    // here you put the objectId that you want to update
-    // query.get(objectid).then((object) => {
-    //   object.set('isUserBan', false);
-    //   object.save().then((response) => {
-    //     // You can use the "get" method to get the value of an attribute
-    //     // Ex: response.get("<ATTRIBUTE_NAME>")
-    //     if (typeof document !== 'undefined') document.write(`Updated : ${JSON.stringify(response)}`);
-    //     console.log('Updated ', response);
-    //   }, (error) => {
-    //     if (typeof document !== 'undefined') document.write(`Error while updating : ${JSON.stringify(error)}`);
-    //     console.error('Error while updating ', error);
-    //   });
-    // });
-
-
+  
     const User = new Parse.User();
     const query = new Parse.Query(User);
-
     // Finds the user by its ID
     query.get(objectid).then((user) => {
       // Updates the data we want
@@ -80,15 +65,21 @@ class Users extends React.Component {
       user.set('isUserBan', false);
       // Saves the user with the updated data
       console.log('Current User record is ' + JSON.stringify(Parse.User.current()));
-      user.save({lastLogin:new Date()}, { id_token: user.get("sessionToken") }).then((response) => {
+      var aValue = localStorage.getItem('id_token');
+      
+      
+      user.save(null, { useMasterKey: true }).then((response) => {
         
         this.setState({isUser:false})
-        toast.configure({
+        
+        const options = toast.configure({
           autoClose: 2000,
           draggable: false,
-          //etc you get the idea
         });
-        toast("User Deactive Successfully")
+        //toast("User Active Successfully");
+        toast.error("User Deactive Successfully", options);
+        
+        this.getData();
         //window.location.reload();
         // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
         // console.log('Updated user', response);
@@ -113,16 +104,17 @@ class Users extends React.Component {
       user.set('isUserBan', true);
       // Saves the user with the updated data
       console.log('Current User record is ' + JSON.stringify(Parse.User.current()));
-      user.save({lastLogin:new Date()}, { id_token: user.get("sessionToken") }).then((response) => {
+      user.save(null, { useMasterKey: true }).then((response) => {
         //localStorage.getItem('id_token');
         //{lastLogin:new Date()}, { sessionToken: user.get("sessionToken") }
         this.setState({isUser:true})
-        toast.configure({
+        const options = toast.configure({
           autoClose: 2000,
           draggable: false,
-          //etc you get the idea
         });
-        toast("User Active Successfully");
+        //toast("User Active Successfully");
+        toast.success("User Active Successfully", options);
+        this.getData();
         //window.location.reload();
         // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
         // console.log('Updated user', response);
@@ -136,11 +128,6 @@ class Users extends React.Component {
   }
 
   
-
-  // changeUserRole = (userId) => {
-  //   console.log(userId);
-  // }
-
   handleClick = (e, data) => {
     //console.log(data.objectId);
     const User = new Parse.User();
@@ -152,8 +139,7 @@ class Users extends React.Component {
       user.set('userType', e.target.value);
       // Saves the user with the updated data
       console.log('Current User record is ' + JSON.stringify(Parse.User.current()));
-      user.save().then((response) => {
-        
+      user.save(null, { useMasterKey: true }).then((response) => {
         this.setState({role:e.target.value});
         toast.configure({
           autoClose: 2000,
@@ -161,6 +147,7 @@ class Users extends React.Component {
           //etc you get the idea
         });
         toast("Change User Role");
+        this.getData();
         //window.location.reload();
         // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
         // console.log('Updated user', response);
@@ -169,13 +156,6 @@ class Users extends React.Component {
         console.error('Error while updating user', error);
       });
      });
-
-
-    
-    //console.log(data.objectId);
-    // if(data.objectId){
-    //   this.setState({role:e.target.value});
-    // }
     
   };
 
@@ -193,13 +173,27 @@ class Users extends React.Component {
       
       [
       <img style={{width:'50px'}} src='' />,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,data.isUserBan == true ? "Active" : "Deactive",
-      <button
+      localStorage.getItem('userType') === 'admin' ? (
+        <Button variant="contained" color="secondary" size="small"
          onClick={()=>this.handleChangeDea(data.objectId)}
-       >Deactive</button>,
-      <button
-         onClick={()=>this.handleChangeActive(data.objectId)}
-       >Active</button>,
+       >Deactive</Button>
+      ) : (
+        <Button variant="contained" color="secondary" disabled size="small"
+      onClick={()=>this.handleChangeDea(data.objectId)}
+    >Deactive</Button>
+    ),
 
+    localStorage.getItem('userType') === 'admin' ? (
+      <Button variant="contained" color="primary" size="small"
+         onClick={()=>this.handleChangeActive(data.objectId)}
+       >Active</Button>
+    ) : (
+    <Button variant="contained" color="primary" disabled size="small"
+    onClick={()=>this.handleChangeActive(data.objectId)}
+  >Active</Button>
+  ),
+  
+       localStorage.getItem('userType') === 'admin' ? (
        <Select
           labelId="demo-simple-select-filled-label"
           id="demo-simple-select-filled"
@@ -212,7 +206,22 @@ class Users extends React.Component {
           <MenuItem value="user">User</MenuItem>
           <MenuItem value="admin">Admin</MenuItem>
         </Select>
-       
+       ) : (
+        <Select
+        disabled
+          labelId="demo-simple-select-filled-label"
+          id="demo-simple-select-filled"
+          value={data.userType}
+          onChange={((e) => this.handleClick(e, data))}
+        >
+          <MenuItem value="none">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value="user">User</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+        </Select>
+       ),
+
       ]
       
       );
@@ -249,7 +258,6 @@ class Users extends React.Component {
          label: "Gender",
          options: {
           filter: true,
-          
         }
         },
         {
@@ -292,14 +300,17 @@ class Users extends React.Component {
             sort: false,
            }
          },
+       
          {
-          name: "DeActive User",
-          label: "DeActive User",
+          name: "Deactive User",
+          label: "Deactive User",
           options: {
             filter: false,
             sort: false,
            }
          },
+         
+  
          {
           name: "Active User",
           label: "Active User",
@@ -308,6 +319,7 @@ class Users extends React.Component {
             sort: false,
            }
          },
+
          {
           name: "Change Role",
           label: "Change Role",
@@ -320,7 +332,7 @@ class Users extends React.Component {
 
     return (
       <>
-      <PageTitle title="User" />
+      <PageTitle title="Users List" />
         <Grid container spacing={4}>
             <Grid item xs={12}>
               <MUIDataTable
@@ -329,6 +341,7 @@ class Users extends React.Component {
                 columns={columns}
                 options={{
                   filterType: "multiselect",
+                  selectableRows:'none',
                 }}
               />
           </Grid>

@@ -35,6 +35,19 @@ const structure = [
   { id: 3, label: "Users", link: "/app/users", icon: <TableIcon /> },
 
   { id: 20, label: "Feeds", link: "/app/feeds", icon: <UIElementsIcon /> },
+
+  { id: 4, label: "Comments", link: "/app/comments", icon: <LibraryIcon /> },
+  {
+    id: 4,
+    label: "Reports",
+    link: "/app/ui",
+    icon: <UIElementsIcon />,
+    children: [
+      { label: "Active Reports", link: "/app/active" },
+      { label: "Charts", link: "/app/ui/charts" },
+      { label: "Maps", link: "/app/ui/maps" },
+    ],
+  },
  
 ];
 

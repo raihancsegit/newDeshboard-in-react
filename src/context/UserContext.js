@@ -65,15 +65,14 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
           currentUser.fetch().then(function(fetchedUser) {
             var name = fetchedUser.getUsername();
             //alert(name)
-            localStorage.setItem('id_token', 1)
+            localStorage.setItem('id_token', user.get("sessionToken"))
+            localStorage.setItem('user', user.get("name"))
+            localStorage.setItem('userType', user.get("userType"))
               setError(null)
               setIsLoading(false)
               dispatch({ type: 'LOGIN_SUCCESS' })
               history.push('/app/dashboard')
           });
-              
-          
-          
           
         }, 1000);
       } else {

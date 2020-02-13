@@ -25,6 +25,8 @@ import Charts from "../../pages/charts";
 
 import Feeds from "../../pages/feeds/feeds.js";
 import Users from "../../pages/users/users.js";
+import Comments from "../../pages/comments/comments.js";
+import Active from "../../pages/active/active.js";
 // context
 import { useLayoutState } from "../../context/LayoutContext";
 
@@ -50,16 +52,17 @@ function Layout(props) {
               <Route path="/app/tables" component={Tables} />
               <Route path="/app/users" component={Users} />
               <Route path="/app/feeds" component={Feeds} />
+              <Route path="/app/comments" component={Comments} />
 
-              {/* <Route path="/app/notifications" component={Notifications} />
+               <Route path="/app/notifications" component={Notifications} />
               <Route
                 exact
                 path="/app/ui"
                 render={() => <Redirect to="/app/ui/icons" />}
               />
-              <Route path="/app/ui/maps" component={Maps} />
+              <Route path="/app/active" component={Active} />
               <Route path="/app/ui/icons" component={Icons} />
-              <Route path="/app/ui/charts" component={Charts} /> */}
+              <Route path="/app/ui/charts" component={Charts} /> *
             </Switch>
           </div>
         </>
