@@ -172,7 +172,7 @@ class Users extends React.Component {
       users.map((data,i) =>
       
       [
-      <img style={{width:'50px'}} src='' />,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,data.isUserBan == true ? "Active" : "Deactive",
+      <img style={{width:'50px'}} src={data.photo ? data.photo.url : 'No Image'} />,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,data.isUserBan == true ? "Active" : "Deactive",
       localStorage.getItem('userType') === 'admin' ? (
         <Button variant="contained" color="secondary" size="small"
          onClick={()=>this.handleChangeDea(data.objectId)}

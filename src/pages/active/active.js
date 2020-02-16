@@ -23,7 +23,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -43,8 +42,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
+import ReactPaginate from 'react-paginate';
+import 'react-toastify/dist/ReactToastify.css';
 //import Autocomplete from '@material-ui/lab/Autocomplete';
 var Parse = require('parse/node');
+
 
 class Active extends React.Component {
   
@@ -52,6 +54,7 @@ class Active extends React.Component {
     super(props);
     this.state = {
       Feeds:[],
+      TodayWeekMonth:[],
     }
 
   }
@@ -63,7 +66,7 @@ class Active extends React.Component {
   getFeedsData(){
     const MyCustomClass = Parse.Object.extend('Post');
     const query = new Parse.Query(MyCustomClass);
-    
+    query.include('postedBy');
     query.find().then((results) => {
       
      const FeedsJeson = JSON.stringify(results);
@@ -88,6 +91,7 @@ class Active extends React.Component {
      
      this.setState({
        Feeds:Feeds,
+       
      })
  
      });
@@ -95,52 +99,115 @@ class Active extends React.Component {
     // console.log(queryValue);
   }
 
+  
+  handlePublishUnpublish = (e, data) => {
+    //console.log(data.objectId);
+    const post = Parse.Object.extend('Post');
+    const query = new Parse.Query(post);
+
+    query.get(data.objectId).then((Post) => {
+      // Updates the data we want
+      //user.set('gender', 'female');
+      Post.set('FeedsStatus', e.target.value);
+      // Saves the user with the updated data
+      Post.save().then((response) => {
+        
+        this.setState({FeedsStatus:e.target.value});
+        toast.configure({
+          autoClose: 2000,
+          draggable: false,
+          //etc you get the idea
+        });
+        toast("Feeds Change Successfull");
+        this.getFeedsData();
+        //window.location.reload();
+        // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
+        // console.log('Updated user', response);
+      }).catch((error) => {
+        if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
+        console.error('Error while updating user', error);
+      });
+     });
+
+
+    
+  };
+
+  handleWeekMonthValue = (e, data) => {
+    //console.log(data.objectId);
+    const post = Parse.Object.extend('Post');
+    const query = new Parse.Query(post);
+    query.find().then((results) => {
+      
+      const FeedsJeson = JSON.stringify(results);
+      const Feeds = JSON.parse(FeedsJeson);
+
+       console.log(e.target.value);
+       if(e.target.value == 'week'){
+        Feeds.map((data,i) => {
+          var pDate = new Date(data.createdAt)
+          var cDate = new Date()
+          const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
+          //console.log(dataFormate)
+          if(dataFormate < 1)
+          //this.setState({Feeds:data})
+                console.log(data.postText)
+          });
+        }
+        
+
+     });
+
+    }
+    
+
+
   render() {
     let Feeds = this.state.Feeds;
 
-    return (
-      <>
-      <PageTitle title="Active Report List" />
-      <Grid container spacing={4}>
-          <Grid item xs={4}>
-            <form  noValidate autoComplete="off">
-              <TextField id="outlined-basic" label="Search" variant="outlined" style={{width: 334}} onChange={this.handleSerch}/>
-            </form>
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl variant="filled">
-              <InputLabel id="demo-simple-select-filled-label">Filter List</InputLabel>
-              <Select
-                labelId="demo-simple-select-filled-label"
-                id="demo-simple-select-filled"
-                value="publish"
-                //onChange={handleChange}
-              >
-                <MenuItem value="">
-                  <em>Filter List</em>
-                </MenuItem>
-                <MenuItem value="publish">Publish</MenuItem>
-                <MenuItem value="unpublish">Unpublish</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-      </Grid>
-      
+
+return (
+<>
+    <PageTitle title="Active Report List" />
+    <Grid container spacing={4}>
+        <Grid item xs={4}>
+          <form  noValidate autoComplete="off">
+            <TextField id="outlined-basic" label="Search" variant="outlined" style={{width: 334}} onChange={this.handleSerch}/>
+          </form>
+        </Grid>
+        <Grid item xs={4}>
+          <FormControl variant="filled">
+            <InputLabel id="demo-simple-select-filled-label">Filter List</InputLabel>
+            <Select
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              value={this.state.TodayWeekMonth}
+              onChange={((e) => this.handleWeekMonthValue(e))}
+              //onChange={handleChange}
+            >
+              <MenuItem value="">
+                <em>Filter List</em>
+              </MenuItem>
+              <MenuItem value="today" >Today</MenuItem>
+              <MenuItem value="week" >This Week</MenuItem>
+              <MenuItem value="month">This Month</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+    </Grid>
     
-      <Grid container spacing={4}>
+    <Grid container spacing={4}>
        { Feeds.map((data,i) =>  
-    
+         
         <Grid item xs={4}>
             <Card >
               <CardHeader
                 subheader={moment(data.createdAt).format('dddd, MMMM Do YYYY')}
               />
-              <img src={data.content.url}  width="350" height="200"/>
+              <img src={data.content ? data.content.url : ' '}  width="350" height="200"/>
               <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
                   {data.postText}
-
-                  
                 </Typography>
                 
               </CardContent>
@@ -150,14 +217,23 @@ class Active extends React.Component {
                   container 
                   spacing={50}
                 >
-                  <Button variant="contained" color="primary" >
-                    Publish
-                  </Button>
+                  User: {data.postedBy ? data.postedBy.name : ''}
+                
+                  
+                  <Select
+                    labelId="demo-simple-select-filled-label"
+                    id="demo-simple-select-filled"
+                    value={data.FeedsStatus}
+                    onChange={((e) => this.handlePublishUnpublish(e, data))}
+                  >
+                  <MenuItem value="publish">Publish</MenuItem>
+                  <MenuItem value="unpublish">Unpublish</MenuItem>
+                </Select> 
+                
+                  
                 </Grid>
                 
-                  <Button variant="contained" color="secondary" >
-                    Unpublish
-                  </Button>
+                  
                
               </CardActions>
             
@@ -170,6 +246,8 @@ class Active extends React.Component {
 
           
         </Grid>
+
+        
       </>
     );
   }
