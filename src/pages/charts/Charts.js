@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect  } from "react";
 import { Grid } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import {
@@ -21,50 +21,7 @@ import ApexLineChart from "./components/ApexLineChart";
 import ApexHeatmap from "./components/ApexHeatmap";
 import PageTitle from "../../components/PageTitle/PageTitle";
 
-const lineChartData = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+
 
 const pieChartData = [
   { name: "Group A", value: 400 },
@@ -72,18 +29,137 @@ const pieChartData = [
   { name: "Group C", value: 300 },
   { name: "Group D", value: 200 },
 ];
-
+var Parse = require('parse/node');
 export default function Charts(props) {
   var theme = useTheme();
-
   // local
   var [activeIndex, setActiveIndexId] = useState(0);
+  const [like,setLike] = useState(0);
+  const [dislike,setDislike] = useState(0);
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    // const MyCustomClass = Parse.Object.extend('Post');
+    // const query = new Parse.Query(MyCustomClass);
+    
+    // query.find().then((results) => {
+      
+    //  const FeedsJeson = JSON.stringify(results);
+    //  const Feeds = JSON.parse(FeedsJeson);
+    //  const filteredData =  Feeds.filter((data,i) => {
+    //     var pDate = new Date(data.createdAt)
+    //     var cDate = new Date()
+    //     var Month = cDate.getMonth();
+    //     //alert(Month);
+    //     const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
+    //     //console.log(dataFormate)
+    //     if(dataFormate < 29 ){
+    //       const likes = [
+    //         { group: { objectId: null, total: { $sum: '$likeCount' } } }
+    //       ];
+    //       let ex = new Parse.Query("Post");
+    //       ex.aggregate(likes)
+    //       .then(function(results) {
+    //         console.log(results[0].total);
+    //         //  const total = results[0].total;
+    //          setLike(results[0].total);
+    //       })
+    //       .catch(function(error) {
+    //         console.log(error);
+    //       });
+
+    //       return data;
+    //     }
+    // });
+
+    
+    
+
+    // });
+
+    
+    
+  });
+  document.title = `You clicked ${like} times`;
+  const lineChartData = [
+    {
+      name: "January",
+      Like: like,
+      Dislike: 2400,
+      amt: 2400,
+    },
+    {
+      name: "February",
+      Like: 3000,
+      Dislike: 1398,
+      amt: 2210,
+    },
+    {
+      name: "March",
+      Like: 2000,
+      Dislike: 9800,
+      amt: 2290,
+    },
+    {
+      name: "April",
+      Like: 2780,
+      Dislike: 3908,
+      amt: 2000,
+    },
+    {
+      name: "May",
+      Like: 1890,
+      Dislike: 4800,
+      amt: 2181,
+    },
+    {
+      name: "June",
+      Like: 2390,
+      Dislike: 3800,
+      amt: 2500,
+    },
+    {
+      name: "July",
+      Like: 3490,
+      Dislike: 4300,
+      amt: 2100,
+    },
+    {
+      name: "Aguast",
+      Like: 3490,
+      Dislike: 4300,
+      amt: 2100,
+    },
+    {
+      name: "September",
+      Like: 3490,
+      Dislike: 4300,
+      amt: 2100,
+    },
+    {
+      name: "Octobar",
+      Like: 3490,
+      Dislike: 4300,
+      amt: 2100,
+    },
+    {
+      name: "November",
+      Like: 3490,
+      Dislike: 4300,
+      amt: 2100,
+    },
+    {
+      name: "December",
+      Like: 3490,
+      Dislike: 4300,
+      amt: 2100,
+    },
+  ];
 
   return (
     <>
-      <PageTitle title="Charts Page - Data Display" button="Latest Reports" />
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
+      
+        {/* <Grid item xs={12} md={6}>
           <Widget title="Apex Line Chart" upperTitle noBodyPadding>
             <ApexLineChart />
           </Widget>
@@ -92,9 +168,9 @@ export default function Charts(props) {
           <Widget title="Apex Heatmap" upperTitle noBodyPadding>
             <ApexHeatmap />
           </Widget>
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <Widget title="Simple Line Chart" noBodyPadding upperTitle>
+        </Grid> */}
+        <Grid item xs={12} md={12}>
+          <Widget title="Like Dislike Weekly Charts" noBodyPadding upperTitle>
             <ResponsiveContainer width="100%" height={350}>
               <LineChart
                 width={500}
@@ -114,20 +190,20 @@ export default function Charts(props) {
                 <Legend />
                 <Line
                   type="monotone"
-                  dataKey="pv"
+                  dataKey="Like"
                   stroke={theme.palette.primary.main}
                   activeDot={{ r: 8 }}
                 />
                 <Line
                   type="monotone"
-                  dataKey="uv"
+                  dataKey="Dislike"
                   stroke={theme.palette.secondary.main}
                 />
               </LineChart>
             </ResponsiveContainer>
           </Widget>
         </Grid>
-        <Grid item xs={12} md={4}>
+        {/* <Grid item xs={12} md={4}>
           <Widget title="Pie Chart with Tooltips" noBodyPadding upperTitle>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart width={200} height={300}>
@@ -146,8 +222,8 @@ export default function Charts(props) {
               </PieChart>
             </ResponsiveContainer>
           </Widget>
-        </Grid>
-      </Grid>
+        </Grid> */}
+      
     </>
   );
 }

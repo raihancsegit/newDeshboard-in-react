@@ -79,7 +79,7 @@ class Comments extends React.Component {
           draggable: false,
           //etc you get the idea
         });
-        toast("Change User Role");
+        toast("Comment Permission Change Successfully.");
         this.getCommentData();
         //window.location.reload();
         // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
@@ -108,7 +108,7 @@ class Comments extends React.Component {
     comments.map((data,i) =>
       
       [
-      <img style={{width:'50px'}} src={data.post ? data.post.content.url : 'No Image'} />,data.text, data.post ? data.post.postText : 'empty',data.user.name,moment(data.createdAt).format('MMMM Do YYYY'),
+      <img style={{width:'50px'}} src={data.post ? data.post.content.url : 'No Image'} />,data.text, data.post ? data.post.postText.substr(0,100) : ' ',data.user ? data.user.name : ' ',moment(data.createdAt).format('MMMM Do YYYY'),
        <Select
           labelId="demo-simple-select-filled-label"
           id="demo-simple-select-filled"

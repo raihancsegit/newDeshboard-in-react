@@ -243,16 +243,15 @@ export default function Header(props) {
         >
           <div className={classes.profileMenuUser}>
             <Typography variant="h4" weight="medium">
-            
-             Admin
+                {localStorage.getItem("user")}
             </Typography>
+            
             <Typography
               className={classes.profileMenuLink}
               component="a"
               color="primary"
               href="https://raihan.com"
             >
-             
             </Typography>
           </div>
           

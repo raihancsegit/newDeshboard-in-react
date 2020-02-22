@@ -30,9 +30,7 @@ class Users extends React.Component {
 
 
   componentDidMount(){
-
     this.getData();
-
   }
   getData(){
     const MyCustomClass = Parse.Object.extend('User');
@@ -159,6 +157,57 @@ class Users extends React.Component {
     
   };
 
+  handleActiveDeactive = (e, data) => {
+    //console.log(data.objectId);
+    const User = new Parse.User();
+    const query = new Parse.Query(User);
+
+    query.get(data.objectId).then((user) => {
+      // Updates the data we want
+      //user.set('gender', 'female');
+      if(e.target.value === true){
+        user.set('isUserBan', e.target.value);
+        user.save(null, { useMasterKey: true }).then((response) => {
+          this.setState({isUser:e.target.value})
+          const options = toast.configure({
+            autoClose: 2000,
+            draggable: false,
+          });
+          toast.success("User Active Successfully", options);
+          this.getData();
+          //window.location.reload();
+          // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
+          // console.log('Updated user', response);
+        }).catch((error) => {
+          if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
+          console.error('Error while updating user', error);
+        });
+      }
+      if(e.target.value === false){
+        user.set('isUserBan', e.target.value);
+        user.save(null, { useMasterKey: true }).then((response) => {
+          this.setState({isUser:e.target.value})
+          const options = toast.configure({
+            autoClose: 2000,
+            draggable: false,
+          });
+          //toast("User Active Successfully");
+          toast.error("User Deactive Successfully", options);
+          this.getData();
+          //window.location.reload();
+          // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
+          // console.log('Updated user', response);
+        }).catch((error) => {
+          if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
+          console.error('Error while updating user', error);
+        });
+      }
+      
+
+     });
+    
+  };
+
   
 
   render() {
@@ -172,26 +221,36 @@ class Users extends React.Component {
       users.map((data,i) =>
       
       [
-      <img style={{width:'50px'}} src={data.photo ? data.photo.url : 'No Image'} />,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,data.isUserBan == true ? "Active" : "Deactive",
-      localStorage.getItem('userType') === 'admin' ? (
-        <Button variant="contained" color="secondary" size="small"
-         onClick={()=>this.handleChangeDea(data.objectId)}
-       >Deactive</Button>
-      ) : (
-        <Button variant="contained" color="secondary" disabled size="small"
-      onClick={()=>this.handleChangeDea(data.objectId)}
-    >Deactive</Button>
-    ),
-
-    localStorage.getItem('userType') === 'admin' ? (
-      <Button variant="contained" color="primary" size="small"
-         onClick={()=>this.handleChangeActive(data.objectId)}
-       >Active</Button>
-    ) : (
-    <Button variant="contained" color="primary" disabled size="small"
-    onClick={()=>this.handleChangeActive(data.objectId)}
-  >Active</Button>
-  ),
+      <img style={{width:'50px'}} src={data.photo ? data.photo.url : 'No Image'} />,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,
+      
+        localStorage.getItem('userType') === 'admin' ? (
+          <Select
+            labelId="demo-simple-select-filled-label"
+            id="demo-simple-select-filled"
+            value={data.isUserBan}
+            onChange={((e) => this.handleActiveDeactive(e, data))}
+          >
+            <MenuItem value="none">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={true}>Active</MenuItem>
+            <MenuItem value={false}>Deactive</MenuItem>
+          </Select>
+          ) : (
+          <Select
+          disabled
+            labelId="demo-simple-select-filled-label"
+            id="demo-simple-select-filled"
+            value={data.isUserBan}
+            onChange={((e) => this.handleActiveDeactive(e, data))}
+          >
+            <MenuItem value="none">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value="true">Active</MenuItem>
+            <MenuItem value="false">Deactive</MenuItem>
+          </Select>
+          ),
   
        localStorage.getItem('userType') === 'admin' ? (
        <Select
@@ -292,25 +351,7 @@ class Users extends React.Component {
             sort: false,
            }
          },
-         {
-          name: "Status",
-          label: "Status",
-          options: {
-            filter: false,
-            sort: false,
-           }
-         },
-       
-         {
-          name: "Deactive User",
-          label: "Deactive User",
-          options: {
-            filter: false,
-            sort: false,
-           }
-         },
-         
-  
+        
          {
           name: "Active User",
           label: "Active User",

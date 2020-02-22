@@ -48,14 +48,13 @@ import 'react-toastify/dist/ReactToastify.css';
 var Parse = require('parse/node');
 
 
-class Active extends React.Component {
+class Publish extends React.Component {
   
   constructor(props) {
     super(props);
     this.state = {
       Feeds:[],
       TodayWeekMonth:'Filter',
-      publishUnpublish:'publish',
     }
 
   }
@@ -67,6 +66,7 @@ class Active extends React.Component {
     const MyCustomClass = Parse.Object.extend('Post');
     const query = new Parse.Query(MyCustomClass);
     query.include('postedBy');
+    query.equalTo("FeedsStatus", "publish");
     query.find().then((results) => {
       
      const FeedsJeson = JSON.stringify(results);
@@ -84,6 +84,7 @@ class Active extends React.Component {
     const MyCustomClass = Parse.Object.extend('Post');
     const query = new Parse.Query(MyCustomClass);
     query.startsWith('postText', event.target.value);
+    query.equalTo("FeedsStatus", "publish");
     query.find().then((results) => {
       const FeedsJeson = JSON.stringify(results);
       const Feeds = JSON.parse(FeedsJeson);
@@ -132,6 +133,7 @@ class Active extends React.Component {
     //console.log(data.objectId);
     const post = Parse.Object.extend('Post');
     const query = new Parse.Query(post);
+    query.equalTo("FeedsStatus", "publish");
     query.find().then((results) => {
       
       const FeedsJeson = JSON.stringify(results);
@@ -145,7 +147,7 @@ class Active extends React.Component {
             var pDate = new Date(data.createdAt)
             var cDate = new Date()
             const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-            console.log(dataFormate)
+            //console.log(dataFormate)
             if(dataFormate < 1 ){
               return data;
               
@@ -156,7 +158,7 @@ class Active extends React.Component {
             var pDate = new Date(data.createdAt)
             var cDate = new Date()
             const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-            console.log(dataFormate)
+            //console.log(dataFormate)
             if(dataFormate < 6 ){
               return data;
               
@@ -167,7 +169,7 @@ class Active extends React.Component {
             var pDate = new Date(data.createdAt)
             var cDate = new Date()
             const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-            console.log(dataFormate)
+            //console.log(dataFormate)
             if(dataFormate < 29 ){
               return data;
             }
@@ -184,40 +186,6 @@ class Active extends React.Component {
      });
 
     }
-
-    handlePublishUnpublishFilter = (e, data) => {
-      const MyCustomClass = Parse.Object.extend('Post');
-      const query = new Parse.Query(MyCustomClass);
-      if(e.target.value == 'publish'){
-        query.equalTo("FeedsStatus", "publish");
-        query.find().then((results) => {
-          
-        const FeedsJeson = JSON.stringify(results);
-        const Feeds = JSON.parse(FeedsJeson);
-        
-          this.setState({
-            Feeds:Feeds,
-            publishUnpublish:'publish',
-          })
-
-        });
-      }
-      if(e.target.value == 'unpublish'){
-        query.equalTo("FeedsStatus", "unpublish");
-        query.find().then((results) => {
-          
-        const FeedsJeson = JSON.stringify(results);
-        const Feeds = JSON.parse(FeedsJeson);
-        
-          this.setState({
-            Feeds:Feeds,
-            publishUnpublish:'unpublish',
-          })
-
-        });
-      }
-        
-    }
     
 
 
@@ -227,7 +195,7 @@ class Active extends React.Component {
 
 return (
 <>
-    <PageTitle title="Active Report List" />
+    <PageTitle title="Published Post" />
     <Grid container spacing={4}>
         <Grid item xs={4}>
           <form  noValidate autoComplete="off">
@@ -238,7 +206,7 @@ return (
           <FormControl variant="filled">
             <InputLabel id="demo-simple-select-filled-label">Filter List</InputLabel>
             <Select
-            style={{ width:330 }}
+            style={{ width:280 }}
               labelId="demo-simple-select-filled-label"
               id="demo-simple-select-filled"
               value={this.state.TodayWeekMonth}
@@ -253,26 +221,6 @@ return (
             </Select>
           </FormControl>
         </Grid>
-
-        <Grid item xs={4}>
-          <FormControl variant="filled">
-            <InputLabel id="demo-simple-select-filled-label">Filter Publish/Unpublish</InputLabel>
-            <Select
-            style={{ width:330 }}
-              labelId="demo-simple-select-filled-label"
-              id="demo-simple-select-filled"
-              value={this.state.publishUnpublish}
-              onChange={((e) => this.handlePublishUnpublishFilter(e))}
-            >
-              <MenuItem value="Filter">
-                <em>Filter List</em>
-              </MenuItem>
-              <MenuItem value="publish" >Publish</MenuItem>
-              <MenuItem value="unpublish" >Unpublish</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-
     </Grid>
     
     <Grid container spacing={4}>
@@ -332,7 +280,7 @@ return (
   }
 }
 
-export default Active;
+export default Publish;
 
 
 

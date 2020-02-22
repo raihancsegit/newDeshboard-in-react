@@ -27,6 +27,8 @@ import Feeds from "../../pages/feeds/feeds.js";
 import Users from "../../pages/users/users.js";
 import Comments from "../../pages/comments/comments.js";
 import Active from "../../pages/active/active.js";
+import Publish from "../../pages/publish/publish.js";
+import Unpublish from "../../pages/unpublish/unpublish.js";
 // context
 import { useLayoutState } from "../../context/LayoutContext";
 
@@ -61,8 +63,8 @@ function Layout(props) {
                 render={() => <Redirect to="/app/ui/icons" />}
               />
               <Route path="/app/active" component={Active} />
-              <Route path="/app/ui/icons" component={Icons} />
-              <Route path="/app/ui/charts" component={Charts} /> *
+              <Route path="/app/publish" component={Publish} />
+              <Route path="/app/unpublish" component={Unpublish} />
             </Switch>
           </div>
         </>

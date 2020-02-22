@@ -44,8 +44,8 @@ const structure = [
     icon: <UIElementsIcon />,
     children: [
       { label: "Active Reports", link: "/app/active" },
-      { label: "Charts", link: "/app/ui/charts" },
-      { label: "Maps", link: "/app/ui/maps" },
+      { label: "Publish Post", link: "/app/publish" },
+      { label: "Unpublish Post", link: "/app/unpublish" },
     ],
   },
  

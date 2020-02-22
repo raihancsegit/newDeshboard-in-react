@@ -1,0 +1,6 @@
+{
+  "name": "unpublish",
+  "version": "0.0.0",
+  "main": "unpublish.js",
+  "private": true
+}
