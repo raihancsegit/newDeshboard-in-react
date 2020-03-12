@@ -1,8 +1,10 @@
 import React from "react";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 var UserStateContext = React.createContext();
 var UserDispatchContext = React.createContext();
 var Parse = require('parse/node');
+
 function userReducer(state, action) {
   switch (action.type) {
     case "LOGIN_SUCCESS":
@@ -49,43 +51,99 @@ export { UserProvider, useUserState, useUserDispatch, loginUser, signOut };
 
 // ###########################################################
 
-function loginUser(dispatch, login, password, history, setIsLoading, setError) {
+function loginUser(dispatch, login, password, history,setError) {
   setError(false);
-  setIsLoading(true);
+  //setIsLoading(true);
 
       // Pass the username and password to logIn function
-    Parse.User.logIn(login,password).then((user) => {
-      // Do stuff after successful login
-      // if (typeof document !== 'undefined') document.write(`Logged in user: ${JSON.stringify(user)}`);
-       console.log('Logged in user', user);
 
-      if (!!login && !!password) {
-        setTimeout(() => {
-          var currentUser = Parse.User.current(); 
-          currentUser.fetch().then(function(fetchedUser) {
-            var name = fetchedUser.getUsername();
-            //alert(name)
-            localStorage.setItem('id_token', user.get("sessionToken"))
-            localStorage.setItem('user', user.get("name"))
-            localStorage.setItem('userType', user.get("userType"))
-              setError(null)
-              setIsLoading(false)
-              dispatch({ type: 'LOGIN_SUCCESS' })
-              history.push('/app/dashboard')
-          });
+    Parse.User.logIn(login,password).then((user) => {
+
+      localStorage.setItem('id_token', user.get("sessionToken"))
+      localStorage.setItem('user', user.get("name"))
+      localStorage.setItem('userEmail', user.get("email"))
+      localStorage.setItem('userType', user.get("userType"))
+
+      
+      localStorage.setItem('userAvatar', JSON.stringify(user.get("photo")))
+
+        localStorage.setItem('alluser', JSON.stringify(user))
+
+      // Storage.prototype.setObject = function(key, value) {
+      //   this.setItem("userAvatar", JSON.stringify(user.get("photo")))
+      // }
+
+      // Storage.prototype.getObject = function(key) {
+      //   var value = this.getItem(key);
+      //   return value && JSON.parse(value);
+      //   console.log(value);
+      // }
+
+      
+
+         //alert(localStorage.getItem('userType'));
+
+      if(localStorage.getItem('userType') === 'admin' || localStorage.getItem('userType') === 'moderator'){
+
+        if (!!login && !!password) {
+          setTimeout(() => {
+            var currentUser = Parse.User.current(); 
+            currentUser.fetch().then(function(fetchedUser) {
+              var name = fetchedUser.getUsername();
+              //alert(currentUser);
+              //console.log(fetchedUser);
+              localStorage.setItem('cuser', JSON.stringify(currentUser))
+              // const filterdata = currentUser.filter(data => {
+              //   console.log("data "+data)
+              // })
+              const options = toast.configure({
+                autoClose: 1000,
+                draggable: false,
+              });
+              //toast("User Active Successfully");
+              toast.success("Login was successful", options);
+                setError(null)
+                //setIsLoading(false)
+                dispatch({ type: 'LOGIN_SUCCESS' })
+                history.push('/app/dashboard')
+            });
+
+          }, 1000);
+        } else {
           
-        }, 1000);
-      } else {
-        dispatch({ type: "LOGIN_FAILURE" });
-        setError(true);
-        setIsLoading(false);
+          setError(true);
+          //setIsLoading(true);
+
+          dispatch({ type: "LOGIN_FAILURE" });
+          history.push('/login')
+        }
+
+      }else{
+          toast.configure({
+            autoClose: 2000,
+            draggable: false,
+            //etc you get the idea
+          });
+          toast("Login Permission Failed..");
+          localStorage.removeItem("id_token");
+          dispatch({ type: "SIGN_OUT_SUCCESS" });
+          history.push("/login");
       }
+
+     
 
 
     }).catch(error => {
-      if (typeof document !== 'undefined') document.write(`Error while logging in user: ${JSON.stringify(error)}`);
-      console.error('Error while logging in user', error);
+      
+      const options = toast.configure({
+        autoClose: 4000,
+        draggable: false,
+      });
+      //toast("User Active Successfully");
+      toast.error("Incorrect username or password", options);
     })
+
+  
 
   
 }

@@ -38,18 +38,7 @@ export default function Widget({
               <Typography variant="h5" color="textSecondary">
                 {title}
               </Typography>
-              {!disableWidgetMenu && (
-                <IconButton
-                  color="primary"
-                  classes={{ root: classes.moreButton }}
-                  aria-owns="widget-menu"
-                  aria-haspopup="true"
-                  onClick={() => setMoreMenuOpen(true)}
-                  buttonRef={setMoreButtonRef}
-                >
-                  <MoreIcon />
-                </IconButton>
-              )}
+              
             </React.Fragment>
           )}
         </div>
@@ -68,6 +57,7 @@ export default function Widget({
         anchorEl={moreButtonRef}
         onClose={() => setMoreMenuOpen(false)}
         disableAutoFocusItem
+        
       >
         <MenuItem>
           <Typography>Edit</Typography>

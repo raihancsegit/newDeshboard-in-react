@@ -22,10 +22,8 @@ import google from "../../images/google.svg";
 
 // context
 import { useUserDispatch, loginUser } from "../../context/UserContext";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-var Parse = require('parse/node');
-function Login(props) {
+
+function Forget(props) {
   var classes = useStyles();
 
   // global
@@ -39,29 +37,6 @@ function Login(props) {
   var [loginValue, setLoginValue] = useState("");
   var [passwordValue, setPasswordValue] = useState("");
 
-  var [forgetPassword,setForgetPassword] = useState("");
-
-  const fogetPassord = () => {
-      console.log(forgetPassword)
-      var email = forgetPassword;
-      Parse.User.requestPasswordReset(email).then(() => {
-        // Password reset request was sent successfully
-        // if (typeof document !== 'undefined') document.write('Reset password email sent successfully');
-        const options = toast.configure({
-          autoClose: 4000,
-          draggable: false,
-        });
-        //toast("User Active Successfully");
-        toast.success("Request Accepting. Check Your Email", options);
-      }).catch((error) => {
-        const options = toast.configure({
-          autoClose: 4000,
-          draggable: false,
-        });
-        //toast("User Active Successfully");
-        toast.success("Enter Valid Email", options);
-      })
-  }
   return (
     <Grid container className={classes.container}>
       <div className={classes.logotypeContainer}>
@@ -77,14 +52,13 @@ function Login(props) {
             textColor="primary"
             centered
           >
-             <Tab label="Login" classes={{ root: classes.tab }} /> 
-            <Tab label="Forget Password" classes={{ root: classes.tab }} /> 
-
+            {/* <Tab label="Login" classes={{ root: classes.tab }} /> */}
+            {/* <Tab label="New User" classes={{ root: classes.tab }} /> */}
           </Tabs>
           {activeTabId === 0 && (
             <React.Fragment>
               <Typography variant="h5" className={classes.greeting}>
-                Admin Login
+                Admin Reset Password
               </Typography>
               
               <Fade in={error}>
@@ -148,25 +122,45 @@ function Login(props) {
                   </Button>
                 )}
 
-                {/* <Button
+                <Button
                   color="primary"
                   size="large"
                   className={classes.forgetButton}
                 >
-                  <Link to={"forget-password/"}>Forget Password</Link>
-                </Button> */}
+                  <Link to={"login/"}>Back Login</Link>
+                </Button>
 
               </div>
             </React.Fragment>
           )}
-
           {activeTabId === 1 && (
-
             <React.Fragment>
-              <Typography variant="h6" className={classes.greeting}>
-                Forget Password
+              <Typography variant="h1" className={classes.greeting}>
+                Welcome!
               </Typography>
-             
+              <Typography variant="h2" className={classes.subGreeting}>
+                Create your account
+              </Typography>
+              <Fade in={error}>
+                <Typography color="secondary" className={classes.errorMessage}>
+                  Something is wrong with your login or password :(
+                </Typography>
+              </Fade>
+              <TextField
+                id="name"
+                InputProps={{
+                  classes: {
+                    underline: classes.textFieldUnderline,
+                    input: classes.textField,
+                  },
+                }}
+                value={nameValue}
+                onChange={e => setNameValue(e.target.value)}
+                margin="normal"
+                placeholder="Full Name"
+                type="email"
+                fullWidth
+              />
               <TextField
                 id="email"
                 InputProps={{
@@ -175,28 +169,28 @@ function Login(props) {
                     input: classes.textField,
                   },
                 }}
-                //value={loginValue}
-                onChange={e => setForgetPassword(e.target.value)}
+                value={loginValue}
+                onChange={e => setLoginValue(e.target.value)}
                 margin="normal"
                 placeholder="Email Adress"
                 type="email"
                 fullWidth
               />
-              
-              <div className={classes.creatingButtonContainer}>
-                
-                  <Button
-                    onClick={() => {fogetPassord()}}
-                    size="large"
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    className={classes.createAccountButton}
-                  >
-                    Reset Password
-                  </Button>
-                
-              </div>
+              <TextField
+                id="password"
+                InputProps={{
+                  classes: {
+                    underline: classes.textFieldUnderline,
+                    input: classes.textField,
+                  },
+                }}
+                value={passwordValue}
+                onChange={e => setPasswordValue(e.target.value)}
+                margin="normal"
+                placeholder="Password"
+                type="password"
+                fullWidth
+              />
               
               
             </React.Fragment>
@@ -208,4 +202,4 @@ function Login(props) {
   );
 }
 
-export default withRouter(Login);
+export default Forget;

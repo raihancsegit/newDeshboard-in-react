@@ -44,6 +44,7 @@ import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import ReactPaginate from 'react-paginate';
 import 'react-toastify/dist/ReactToastify.css';
+import defaltImage from '../../images/video-icon.jpg'
 //import Autocomplete from '@material-ui/lab/Autocomplete';
 var Parse = require('parse/node');
 
@@ -63,17 +64,48 @@ class Publish extends React.Component {
     this.getFeedsData();
   }
   getFeedsData(){
-    const MyCustomClass = Parse.Object.extend('Post');
+    const MyCustomClass = Parse.Object.extend('Report');
     const query = new Parse.Query(MyCustomClass);
-    query.include('postedBy');
-    query.equalTo("FeedsStatus", "publish");
+    query.include('reportedBy');
+    query.include('post');
+    //query.equalTo("feedsStatus", "publish");
     query.find().then((results) => {
-      
      const FeedsJeson = JSON.stringify(results);
-     const Feeds = JSON.parse(FeedsJeson);
-    
+     
+
+     const Feeds = JSON.parse(FeedsJeson).map(item => {
+      return {...item , count : 1 , postID : item.post.objectId};
+    });
+
+    const UniqueFeeds  = [];
+    const UniqueFeedIds = [];
+
+    Feeds.forEach(item => {
+      if(UniqueFeedIds.indexOf(item.postID) === -1)
+      {
+        UniqueFeedIds.push(item.postID);
+        UniqueFeeds.push(item)
+      }
+      else {
+       const postIndex = UniqueFeeds.findIndex(post => item.postID == post.postID)
+       const updatedFeed = UniqueFeeds[postIndex];
+
+       updatedFeed['count'] = updatedFeed['count'] + 1;
+
+       UniqueFeeds[postIndex] = updatedFeed;
+      }
+    })
+
+     
+     const filterData = UniqueFeeds.filter((data,i) => {
+       if(data.post.feedsStatus === 'publish'){
+         return data;
+       }
+     });
+
+     
     this.setState({
-      Feeds:Feeds,
+      Feeds:filterData,
     })
 
     });
@@ -81,59 +113,46 @@ class Publish extends React.Component {
   }
 
   handleSerch = (event) => {
-    const MyCustomClass = Parse.Object.extend('Post');
+    const MyCustomClass = Parse.Object.extend('Report');
     const query = new Parse.Query(MyCustomClass);
-    query.startsWith('postText', event.target.value);
-    query.equalTo("FeedsStatus", "publish");
+    query.startsWith('reason', event.target.value);
+    //query.startsWith('reportedBy', event.target.value);
     query.find().then((results) => {
       const FeedsJeson = JSON.stringify(results);
       const Feeds = JSON.parse(FeedsJeson);
-     this.setState({
-       Feeds:Feeds,
-     })
- 
+      this.setState({
+        Feeds:Feeds,
+      })
+  
      });
   }
 
-  
-  handlePublishUnpublish = (e, data) => {
-    //console.log(data.objectId);
-    const post = Parse.Object.extend('Post');
-    const query = new Parse.Query(post);
-
-    query.get(data.objectId).then((Post) => {
-      // Updates the data we want
-      //user.set('gender', 'female');
-      Post.set('FeedsStatus', e.target.value);
-      // Saves the user with the updated data
-      Post.save().then((response) => {
-        
-        this.setState({FeedsStatus:e.target.value});
+  UnblishClick = (pid)  => {
+    const Posts = Parse.Object.extend('Post');
+    const query = new Parse.Query(Posts);
+    // here you put the objectId that you want to update
+    query.get(pid).then((object) => {
+      object.set('feedsStatus', 'unpublish')
+      object.save().then((response) => {
         toast.configure({
           autoClose: 2000,
           draggable: false,
           //etc you get the idea
         });
-        toast("Feeds Change Successfull");
+        toast("Post Unpublish Successfully");
         this.getFeedsData();
-        //window.location.reload();
-        // if (typeof document !== 'undefined') document.write(`Updated user: ${JSON.stringify(response)}`);
-        // console.log('Updated user', response);
-      }).catch((error) => {
-        if (typeof document !== 'undefined') document.write(`Error while updating user: ${JSON.stringify(error)}`);
-        console.error('Error while updating user', error);
+      }, (error) => {
+        if (typeof document !== 'undefined') document.write(`Error while updating Post: ${JSON.stringify(error)}`);
+        console.error('Error while updating Post', error);
       });
-     });
+    });
+}
 
-
-    
-  };
-
-  handleWeekMonthValue = (e, data) => {
-    //console.log(data.objectId);
+  handleWeekMonthValue = (e) => {
+    //console.log(data);
     const post = Parse.Object.extend('Post');
     const query = new Parse.Query(post);
-    query.equalTo("FeedsStatus", "publish");
+    query.equalTo("feedsStatus", "publish");
     query.find().then((results) => {
       
       const FeedsJeson = JSON.stringify(results);
@@ -191,7 +210,7 @@ class Publish extends React.Component {
 
   render() {
     let Feeds = this.state.Feeds;
-
+     //console.log(Feeds);
 
 return (
 <>
@@ -230,11 +249,13 @@ return (
             <Card >
               <CardHeader
                 subheader={moment(data.createdAt).format('dddd, MMMM Do YYYY')}
+                title={"Repoted By " + data.reportedBy ? data.reportedBy.name : ''}
               />
-              <img src={data.content ? data.content.url : ' '}  width="350" height="200"/>
+              { data.post.type === 'photo' || data.post.type ==='drama' ? <img style={{width:'350px', height:'150px'}} src={data.post ? data.post.content.url : defaltImage} /> : <img style={{width:'200px',height:'150px',margin:'0 auto',display:'block'}} src={defaltImage} /> }
+              <button style={{ margin:'0 auto',display:'block',marginTop:'10px' }}>Repoted : {data.count} Time</button>
               <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  {data.postText.substr(0,80)}
+                {data.reason ? data.reason.substr(0,45): data.reason }
                 </Typography>
                 
               </CardContent>
@@ -244,20 +265,9 @@ return (
                   container 
                   spacing={50}
                 >
-                  User: {data.postedBy ? data.postedBy.name : ''}
-                
-                  
-                  <Select
-                    labelId="demo-simple-select-filled-label"
-                    id="demo-simple-select-filled"
-                    value={data.FeedsStatus}
-                    onChange={((e) => this.handlePublishUnpublish(e, data))}
-                  >
-                  <MenuItem value="publish">Publish</MenuItem>
-                  <MenuItem value="unpublish">Unpublish</MenuItem>
-                </Select> 
-                
-                  
+                  <Button size="large" variant="contained" color="secondary" onClick={()=>this.UnblishClick(data.post.objectId) } fullWidth>
+                     Unublished ?
+                    </Button>
                 </Grid>
                 
                   

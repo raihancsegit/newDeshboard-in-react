@@ -15,6 +15,7 @@ import Select from '@material-ui/core/Select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from '@material-ui/core/Button';
+import userAvatar from '../../images/userAvatar.png'
 var Parse = require('parse/node');
 
 class Users extends React.Component {
@@ -24,10 +25,7 @@ class Users extends React.Component {
       users:[],
       role:'user',
     }
-
-  
   }
-
 
   componentDidMount(){
     this.getData();
@@ -183,6 +181,7 @@ class Users extends React.Component {
           console.error('Error while updating user', error);
         });
       }
+
       if(e.target.value === false){
         user.set('isUserBan', e.target.value);
         user.save(null, { useMasterKey: true }).then((response) => {
@@ -218,10 +217,11 @@ class Users extends React.Component {
   
 
     const userDataTable = 
+       
       users.map((data,i) =>
-      
+        
       [
-      <img style={{width:'50px'}} src={data.photo ? data.photo.url : 'No Image'} />,data.name, data.username, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,
+      <img style={{width:'50px'}} src={data.photo ? data.photo.url : userAvatar} />,data.name, data.gender, data.followerCount,data.followingCount,data.postCount,data.bookmarkCount,
       
         localStorage.getItem('userType') === 'admin' ? (
           <Select
@@ -230,9 +230,6 @@ class Users extends React.Component {
             value={data.isUserBan}
             onChange={((e) => this.handleActiveDeactive(e, data))}
           >
-            <MenuItem value="none">
-              <em>None</em>
-            </MenuItem>
             <MenuItem value={true}>Active</MenuItem>
             <MenuItem value={false}>Deactive</MenuItem>
           </Select>
@@ -244,9 +241,7 @@ class Users extends React.Component {
             value={data.isUserBan}
             onChange={((e) => this.handleActiveDeactive(e, data))}
           >
-            <MenuItem value="none">
-              <em>None</em>
-            </MenuItem>
+            
             <MenuItem value="true">Active</MenuItem>
             <MenuItem value="false">Deactive</MenuItem>
           </Select>
@@ -259,9 +254,9 @@ class Users extends React.Component {
           value={data.userType}
           onChange={((e) => this.handleClick(e, data))}
         >
-          <MenuItem value="none">
-            <em>None</em>
-          </MenuItem>
+         <MenuItem value="moderator">
+                Moderator
+            </MenuItem>
           <MenuItem value="user">User</MenuItem>
           <MenuItem value="admin">Admin</MenuItem>
         </Select>
@@ -273,15 +268,16 @@ class Users extends React.Component {
           value={data.userType}
           onChange={((e) => this.handleClick(e, data))}
         >
-          <MenuItem value="none">
-            <em>None</em>
-          </MenuItem>
+          <MenuItem value="moderator">
+              Moderator
+            </MenuItem>
           <MenuItem value="user">User</MenuItem>
           <MenuItem value="admin">Admin</MenuItem>
         </Select>
        ),
 
       ]
+      
       
       );
 
@@ -304,14 +300,7 @@ class Users extends React.Component {
           sort: true,
          }
         },
-        {
-         name: "Username",
-         label: "Username",
-         options: {
-          filter: true,
-          sort: true,
-         }
-        },
+        
         {
          name: "Gender",
          label: "Gender",
@@ -381,8 +370,15 @@ class Users extends React.Component {
                 data={userDataTable}
                 columns={columns}
                 options={{
-                  filterType: "multiselect",
+                  filterType: 'dropdown',
                   selectableRows:'none',
+                  download:false,
+                  rowsPerPageOptions:[10,20,30,40,50,60],
+                  textLabels: {
+                        body: {
+                          noMatch: "Please wait loading data",
+                        }
+                      }  
                 }}
               />
           </Grid>

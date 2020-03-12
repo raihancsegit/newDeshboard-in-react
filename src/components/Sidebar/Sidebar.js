@@ -34,20 +34,24 @@ const structure = [
   
   { id: 3, label: "Users", link: "/app/users", icon: <TableIcon /> },
 
-  { id: 20, label: "Feeds", link: "/app/feeds", icon: <UIElementsIcon /> },
+  { id: 20, label: "Post", link: "/app/feeds", icon: <UIElementsIcon /> },
 
   { id: 4, label: "Comments", link: "/app/comments", icon: <LibraryIcon /> },
   {
-    id: 4,
+    id: 5,
     label: "Reports",
     link: "/app/ui",
     icon: <UIElementsIcon />,
     children: [
-      { label: "Active Reports", link: "/app/active" },
+      { label: "Active Reports", link: "/app/repoted" },
+      // { label: "Active Reports", link: "/app/active" },
       { label: "Publish Post", link: "/app/publish" },
       { label: "Unpublish Post", link: "/app/unpublish" },
     ],
   },
+  { id: 6, label: "About App", link: "/app/about", icon: <TypographyIcon /> },
+  { id: 7, label: "Terms And Condition", link: "/app/terms", icon: <FAQIcon /> },
+  { id: 8, label: "Settings", link: "/app/settings", icon: <FAQIcon /> },
  
 ];
 

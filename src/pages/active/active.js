@@ -283,10 +283,10 @@ return (
               <CardHeader
                 subheader={moment(data.createdAt).format('dddd, MMMM Do YYYY')}
               />
-              <img src={data.content ? data.content.url : ' '}  width="350" height="200"/>
+              <img src={data.content ? data.content.url : ''}  width="350" height="200"/>
               <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  {data.postText.substr(0,80)}
+                  {data.postText ? data.postText.substr(0,100):data.postText}
                 </Typography>
                 
               </CardContent>

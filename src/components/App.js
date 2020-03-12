@@ -7,13 +7,17 @@ import Layout from "./Layout";
 // pages
 import Error from "../pages/error";
 import Login from "../pages/login";
-
+import Post from "../pages/post/post.js";
+import Details from "../pages/details/details.js"
+import Registration from "../pages/registration/registration.js"
+import Download from "../pages/download/download.js"
+import Forget from "../pages/forget/forget.js"
 // context
 import { useUserState } from "../context/UserContext";
 
 var Parse = require('parse/node');
 Parse.serverURL = 'https://parseapi.back4app.com/';
-Parse.initialize("aXKfDZCc5tjs7oSRkmcZaxmsDtAEQwGPvOqNLdfl", "AebKXsVh6qyaUx73vYGCZV8Nd6Egb9ofmpD2QGxi","YDS1wBLpEgEnlHBC1BtQVGtMQDWgOrNXEyoqsyI0");
+Parse.initialize("B5WFknWNWuT43qeXEpW2VFDcHRpf3FgZKxZKVnoq", "PcPbvBzFqChGBT3FTcgTrGdjJGNm8ewSXGquYd2U","4Z3xBNXbEfUbWOWs1qeKHECoZygC74fe6RsOAHp2");
 
 export default function App() {
   // global
@@ -29,10 +33,24 @@ export default function App() {
           render={() => <Redirect to="/app/dashboard" />}
         />
         <PrivateRoute path="/app" component={Layout} />
+        
         <PublicRoute path="/login" component={Login} />
+
+
+        <Route path="/posts" component={Post} />
+        <Route exact path="/post-details/:post_id" component={Details} />
+        <Route exact path="/invite/:who" component={Registration} />
+        <Route exact path="/download" component={Download} />
+        
+        <Route exact path="/forget-password" component={Forget} />
+
+        
+       
         <Route component={Error} />
       </Switch>
     </HashRouter>
+
+      
   );
 
   // #######################################################################
@@ -77,4 +95,16 @@ export default function App() {
       />
     );
   }
+
+  function NotLoginRoute({ component, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={props =>
+            React.createElement(component, props)
+        }
+      />
+    );
+  }
+
 }

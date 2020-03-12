@@ -14,6 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import defaltImage from '../../images/video-icon.jpg'
 import moment from 'moment';
 var Parse = require('parse/node');
 
@@ -22,18 +23,13 @@ class Comments extends React.Component {
     super(props);
     this.state = {
       comments:[],
-      CommentStatus:'publish',
-    }
-
-    
-    
+      commentStatus:'publish',
+    }  
   }
 
 
   componentDidMount(){
-
     this.getCommentData();
-
   }
 
   getCommentData(){
@@ -68,12 +64,12 @@ class Comments extends React.Component {
     query.get(data.objectId).then((Comment) => {
       // Updates the data we want
       //user.set('gender', 'female');
-      Comment.set('CommentStatus', e.target.value);
+      Comment.set('commentStatus', e.target.value);
       // Saves the user with the updated data
       console.log('Current User record is ' + JSON.stringify(Parse.User.current()));
       Comment.save().then((response) => {
         
-        this.setState({CommentStatus:e.target.value});
+        this.setState({commentStatus:e.target.value});
         toast.configure({
           autoClose: 2000,
           draggable: false,
@@ -100,26 +96,38 @@ class Comments extends React.Component {
     
       let comments = this.state.comments;
       //let isUser = this.state.isUser;
-      //console.log(comments);
+      console.log(comments);
       //console.log(comments.text);
   
 
     const commentsDataTable = 
-    comments.map((data,i) =>
+      comments.map((data,i) =>
       
       [
-      <img style={{width:'50px'}} src={data.post ? data.post.content.url : 'No Image'} />,data.text, data.post ? data.post.postText.substr(0,100) : ' ',data.user ? data.user.name : ' ',moment(data.createdAt).format('MMMM Do YYYY'),
+        data.post.type === 'photo' || data.post.type ==='drama' ? <img style={{width:'100px',height:'80px'}} src={data.post ? data.post.content.url : defaltImage} /> : <img style={{width:'100px',height:'80px'}} src={defaltImage} />
+         ,data.text, data.post ? data.post.postText.substr(0,100) : ' ',data.user ? data.user.name : ' ',moment(data.createdAt).format('MMMM Do YYYY'),
+      localStorage.getItem('userType') === 'admin' ? (
        <Select
           labelId="demo-simple-select-filled-label"
           id="demo-simple-select-filled"
-          value={data.CommentStatus}
+          value={data.commentStatus}
           onChange={((e) => this.handlePublishUnpublish(e, data))}
         >,
-         
-          
           <MenuItem value="publish">Publish</MenuItem>
           <MenuItem value="unpublish">Unpublish</MenuItem>
         </Select>
+      ) : (
+        <Select
+          disabled
+          labelId="demo-simple-select-filled-label"
+          id="demo-simple-select-filled"
+          value={data.commentStatus}
+          onChange={((e) => this.handlePublishUnpublish(e, data))}
+        >,
+          <MenuItem value="publish">Publish</MenuItem>
+          <MenuItem value="unpublish">Unpublish</MenuItem>
+        </Select>
+      )
        
       ]
       
@@ -129,8 +137,8 @@ class Comments extends React.Component {
 
       const columns = [
         {
-         name: "Post Photo",
-         label: "Post Photo",
+         name: "Photo",
+         label: "Photo",
          options: {
           filter: false,
           sort: false,
@@ -161,8 +169,8 @@ class Comments extends React.Component {
           }
          },
          {
-          name: "Comments Date",
-          label: "Comments Date",
+          name: "Date",
+          label: "Date",
           options: {
            filter: true,
            sort: true,
@@ -172,7 +180,7 @@ class Comments extends React.Component {
           name: "Action",
           label: "Action",
           options: {
-           filter: true,
+           filter: false,
            sort: true,
           }
          },
@@ -190,7 +198,15 @@ class Comments extends React.Component {
                 data={commentsDataTable}
                 columns={columns}
                 options={{
-                  filterType: "multiselect",
+                  filterType: "droupdown",
+                  selectableRows:'none',
+                  download:false,
+                  rowsPerPageOptions:[10,20,30,40,50,60],
+                  textLabels: {
+                        body: {
+                          noMatch: "Please wait loading data",
+                        }
+                      }
                 }}
               />
           </Grid>

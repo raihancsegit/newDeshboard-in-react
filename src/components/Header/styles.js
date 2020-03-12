@@ -13,9 +13,9 @@ export default makeStyles(theme => ({
       display: "none",
     },
   },
+ 
   appBar: {
     width: "100vw",
-    zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

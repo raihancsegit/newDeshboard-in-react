@@ -20,6 +20,22 @@ import {
 } from "@material-ui/icons";
 import classNames from "classnames";
 
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Collapse from '@material-ui/core/Collapse';
+import Avatar from '@material-ui/core/Avatar';
+import { red } from '@material-ui/core/colors';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ShareIcon from '@material-ui/icons/Share';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import userAvatar from './userAvatar.png';
+
 // styles
 import useStyles from "./styles";
 
@@ -107,14 +123,22 @@ export default function Header(props) {
   var [profileMenu, setProfileMenu] = useState(null);
   var [isSearchOpen, setSearchOpen] = useState(false);
 
-  
-    
-      
-  
-   
+  var [av,setAv0] = useState(null);
+
+  var avatar = localStorage.getItem('userAvatar');
+
+  var alluser = localStorage.getItem('alluser');
+  console.log(avatar);
+//   Parse.User.currentAsync().then(function(user) {
+//     // do stuff with your user
+//     console.log("Current User "+ JSON.stringify(user));
+// });
+
+
+
   return (
-    <AppBar position="fixed" className={classes.appBar}>
-      <Toolbar className={classes.toolbar}>
+    <AppBar position="fixed" className={classes.appBar} style={{ zIndex:'9999',background:'#1D1C1C' }}>
+      <Toolbar className={classes.toolbar} >
         <IconButton
           color="inherit"
           onClick={() => toggleSidebar(layoutDispatch)}
@@ -144,7 +168,7 @@ export default function Header(props) {
           )}
         </IconButton>
         <Typography variant="h6" weight="medium" className={classes.logotype}>
-          RealDbc
+            DBC Lifestyles
         </Typography>
         <div className={classes.grow} />
         
@@ -232,7 +256,7 @@ export default function Header(props) {
             </MenuItem>
           ))}
         </Menu>
-        <Menu
+        {/* <Menu
           id="profile-menu"
           open={Boolean(profileMenu)}
           anchorEl={profileMenu}
@@ -253,19 +277,48 @@ export default function Header(props) {
               href="https://raihan.com"
             >
             </Typography>
-          </div>
+          </div> */}
+
+        <Menu
+          id="profile-menu"
+          open={Boolean(profileMenu)}
+          anchorEl={profileMenu}
+          onClose={() => setProfileMenu(null)}
+          className={classes.headerMenu}
+          classes={{ paper: classes.profileMenu }}
+          disableAutoFocusItem
+        >
           
-          
-          <div className={classes.profileMenuUser}>
-            <Typography
-              className={classes.profileMenuLink}
-              color="primary"
-              onClick={() => signOut(userDispatch, props.history)}
-            >
-              Sign Out
-            </Typography>
-          </div>
+
+          <Card className={classes.root} style={{ padding:'20px' }}>
+              <CardHeader
+                avatar={
+                  <Avatar aria-label="recipe" className={classes.avatar}>
+                    <img style={{ width:'70px', height:'40px' }} src={ userAvatar } />
+                  </Avatar>
+                }
+                
+                title={localStorage.getItem("user")}
+                subheader={localStorage.getItem("userEmail")}
+                
+              />
+              
+              {/* { 
+              console.log("Photo ",localStorage.getItem('userAvatar'))
+              } */}
+            </Card>
+
+            <div className={classes.profileMenuUser}>
+                
+                  <Button variant="contained" color="secondary" onClick={() => signOut(userDispatch, props.history)}>
+                        Sign Out
+                  </Button>
+                  
+                
+            </div>
+
         </Menu>
+        
       </Toolbar>
     </AppBar>
   );
