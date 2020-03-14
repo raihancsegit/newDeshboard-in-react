@@ -34,6 +34,7 @@ import Terms from "../../pages/terms/terms.js";
 import About from "../../pages/about/about.js";
 import Settings from "../../pages/settings/settings.js";
 import Repoted from "../../pages/repoted/repoted.js";
+import Profile from "../../pages/profile/profile.js";
 // context
 import { useLayoutState } from "../../context/LayoutContext";
 
@@ -74,6 +75,7 @@ function Layout(props) {
               <Route path="/app/about" component={About} />
               <Route path="/app/terms" component={Terms} />
               <Route path="/app/settings" component={Settings} />
+              <Route path="/app/profile" component={Profile} />
             </Switch>
           </div>
         </>

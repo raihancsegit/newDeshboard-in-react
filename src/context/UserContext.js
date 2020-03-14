@@ -67,17 +67,7 @@ function loginUser(dispatch, login, password, history,setError) {
       
       localStorage.setItem('userAvatar', JSON.stringify(user.get("photo")))
 
-        localStorage.setItem('alluser', JSON.stringify(user))
-
-      // Storage.prototype.setObject = function(key, value) {
-      //   this.setItem("userAvatar", JSON.stringify(user.get("photo")))
-      // }
-
-      // Storage.prototype.getObject = function(key) {
-      //   var value = this.getItem(key);
-      //   return value && JSON.parse(value);
-      //   console.log(value);
-      // }
+      localStorage.setItem('alluser', JSON.stringify(user))
 
       
 

@@ -11,6 +11,7 @@ import {
   HelpOutline as FAQIcon,
   ArrowBack as ArrowBackIcon,
 } from "@material-ui/icons";
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
 import classNames from "classnames";
@@ -52,6 +53,7 @@ const structure = [
   { id: 6, label: "About App", link: "/app/about", icon: <TypographyIcon /> },
   { id: 7, label: "Terms And Condition", link: "/app/terms", icon: <FAQIcon /> },
   { id: 8, label: "Settings", link: "/app/settings", icon: <FAQIcon /> },
+  { id: 8, label: "Profile", link: "/app/profile", icon: <AccountBoxIcon /> }
  
 ];
 
