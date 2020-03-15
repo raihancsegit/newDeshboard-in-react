@@ -107,8 +107,7 @@ componentDidMount(){
         alert("Successfully User Registration")
         this.props.history.push('/download')
       }).catch(error => {
-        if (typeof document !== 'undefined') document.write(`Error while signing up user: ${JSON.stringify(error)}`);
-        console.error('Error while signing up user', error);
+        alert("User Registration Failed")
       });
 
     }else {

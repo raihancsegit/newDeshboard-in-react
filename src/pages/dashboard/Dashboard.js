@@ -67,6 +67,7 @@ class Dashboard extends React.Component {
       users:[], 
       post:[],
       topPost:[],
+      country:[],
     }
 
     
@@ -126,6 +127,7 @@ class Dashboard extends React.Component {
           this.getRecenltyData();
           this.getRecenltyNews();
           this.topNews();
+          this.usesCountry();
           
     
   }
@@ -182,13 +184,56 @@ class Dashboard extends React.Component {
     const query = new Parse.Query(MyCustomClass);
     query.descending("likeCount");
     query.find().then((results) => {
-      
       const userJeson = JSON.stringify(results);
       const Post = JSON.parse(userJeson);
       
        this.setState({
          ...this.state,
          topPost : Post,
+       })
+ 
+     });
+
+    
+  }
+
+  usesCountry = () => {
+    const MyCustomClass = Parse.Object.extend('Post');
+    const query = new Parse.Query(MyCustomClass);
+    //query.equalTo("location", "Dhaka, Bangladesh");
+    query.find().then((results) => {
+      const userJeson = JSON.stringify(results);
+      const Post = JSON.parse(userJeson).map(item => {
+        return {...item , count : 1 , location : item.location};
+      });
+
+      const UniqueFeeds  = [];
+     const UniqueFeedIds = [];
+
+     Post.forEach(item => {
+       if(UniqueFeedIds.indexOf(item.location) === -1)
+       {
+         UniqueFeedIds.push(item.location);
+         UniqueFeeds.push(item)
+       }
+       else {
+        const postIndex = UniqueFeeds.findIndex(post => item.location == post.location)
+        const updatedFeed = UniqueFeeds[postIndex];
+
+        updatedFeed['count'] = updatedFeed['count'] + 1;
+
+        UniqueFeeds[postIndex] = updatedFeed;
+       }
+     })
+
+    console.log({
+      Post,
+       UniqueFeeds
+     })
+
+       this.setState({
+         ...this.state,
+         country : UniqueFeeds,
        })
  
      });
@@ -206,6 +251,7 @@ class Dashboard extends React.Component {
     let users        = this.state.users;
     let post        = this.state.post;
     let topPost     = this.state.topPost;
+    let country     = this.state.country;
 
     //console.log(topPost);
 
@@ -239,6 +285,15 @@ class Dashboard extends React.Component {
         data.likeCount,
         data.dislikeCount,
         data.shareCount],
+      )
+
+    const usesCountry = 
+      country.map((data,i) =>
+        [ 
+        data.location,
+        data.count,
+        
+        ]
       )
       
   const postDataTable = 
@@ -329,8 +384,9 @@ class Dashboard extends React.Component {
         </Grid>
 
         
-
+        
         <Charts />
+       
 
         <Grid item xs={6}>
           <MUIDataTable
@@ -392,11 +448,38 @@ class Dashboard extends React.Component {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={8}>
             <MUIDataTable
               title="Popular Posts"
               data={topnews}
               columns={["Photo", "Post Text","LikeCount","DislikeCount","ShareCount"]}
+              options={{
+                filter: false,
+                selectableRows: 'multiple',
+                filterType: 'dropdown',
+                responsive: 'stacked',
+                rowsPerPage: 5,
+                rowsPerPageOptions:[5,10,20,50],
+                selectableRows:'none',
+                download:false,
+                viewColumns:false,
+                print:false,
+                textLabels: {
+                  body: {
+                    noMatch: "Please wait loading data",
+                  }
+                }
+                
+              }}
+              
+            />
+          </Grid>
+
+          <Grid item xs={4}>
+            <MUIDataTable
+              title="Usage By Country"
+              data={usesCountry}
+              columns={["Location","Count"]}
               options={{
                 filter: false,
                 selectableRows: 'multiple',

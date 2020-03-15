@@ -832,26 +832,26 @@ export default function Charts(props) {
    
     const MyCustomClass = Parse.Object.extend('PostAction');
     const query = new Parse.Query(MyCustomClass);
-    query.equalTo("type", "dislike");
+    query.equalTo("type", "like");
     query.find().then((results) => {
       const FeedsJeson = JSON.stringify(results);
       const Feeds = JSON.parse(FeedsJeson);
-      const likeCount = Feeds.filter(item =>{
-        var pDate = new Date(item.createdAt);
+      const likeCount = Feeds.filter((data,i) => {
+        var pDate = new Date(data.createdAt);
         var cDate = new Date();
         var Month = cDate.getMonth();
         //alert(Month);
         if(Month === 2){
           const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-          console.log(dataFormate);
+          console.log("Date Formate "+dataFormate);
 
             if(value === 'seven'){
-              if(dataFormate < 7 ){
-                console.log("item "+ item.createdAt);
+              if(dataFormate < 1 ){
+                console.log("item "+ data.createdAt);
                 query.count().then(count => {
                 //if (typeof document !== 'undefined') document.write(`ParseObjects found: ${count}`);
-                  console.log(`ParseObjects found: ${count}`);
-                  janSetDislike(count);
+                  //console.log(`ParseObjects found: ${count}`);
+                  janSetLike(count);
         
                 });
               }
@@ -859,11 +859,11 @@ export default function Charts(props) {
 
             if(value === 'fifthen'){
               if(dataFormate < 15 ){
-                console.log("item "+ item.createdAt);
+                console.log("item "+ data.createdAt);
                 query.count().then(count => {
                 //if (typeof document !== 'undefined') document.write(`ParseObjects found: ${count}`);
-                  console.log(`ParseObjects found: ${count}`);
-                  janSetDislike(count);
+                  //console.log(`ParseObjects found: ${count}`);
+                  janSetLike(count);
         
                 });
               }
@@ -907,7 +907,6 @@ export default function Charts(props) {
                   <NativeSelect
                     //value={state.age}
                     onChange={((e) => handleChange(e))}
-                    //onChange={((e) => handleWeekMonthValue(e))}
                     name="age"
                     //className={classes.selectEmpty}
                     inputProps={{ 'aria-label': 'age' }}

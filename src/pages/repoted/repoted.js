@@ -143,7 +143,7 @@ class Repoted extends React.Component {
             var pDate = new Date(data.createdAt)
             var cDate = new Date()
             const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-            //console.log(dataFormate)
+            console.log(dataFormate)
             if(dataFormate < 1 ){
               return data;
               
@@ -154,7 +154,7 @@ class Repoted extends React.Component {
             var pDate = new Date(data.createdAt)
             var cDate = new Date()
             const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-            //console.log(dataFormate)
+            console.log(dataFormate)
             if(dataFormate < 6 ){
               return data;
               
@@ -165,7 +165,7 @@ class Repoted extends React.Component {
             var pDate = new Date(data.createdAt)
             var cDate = new Date()
             const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-            //console.log(dataFormate)
+            console.log(dataFormate)
             if(dataFormate < 29 ){
               return data;
             }

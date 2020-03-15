@@ -52,39 +52,8 @@ class Profile extends React.Component {
 
   componentDidMount(){
 
-    
-
    this.getdata();
 
-    const TermsAndPrivacy = Parse.Object.extend('TermsAndPrivacy');
-    const query = new Parse.Query(TermsAndPrivacy)
-    query.find().then((results) => {
-      
-     const termsJeson = JSON.stringify(results);
-     const terms = JSON.parse(termsJeson);
-     const homeUrl = terms.map((data,i)=>{
-       return data.homePageUrl;
-     });
-     const andriodeUrl = terms.map((data,i)=>{
-      return data.androidUrl;
-    });
-    const iosUrl = terms.map((data,i) => {
-      return data.iPhoneUrl;
-    });
-
-        this.setState({
-          ...this.state,
-          homeUrl : homeUrl[0],
-          andriodeUrl:andriodeUrl[0],
-          iosUrl:iosUrl[0],
-          
-        })
-
-    });
-
-    
-  
-    
   }
 
  getdata = () => {
