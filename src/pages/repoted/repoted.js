@@ -188,7 +188,7 @@ class Repoted extends React.Component {
         const query = new Parse.Query(Posts);
         // here you put the objectId that you want to update
         query.get(pid).then((object) => {
-          object.set('FeedsStatus', 'publish')
+          object.set('feedsStatus', 'publish')
           object.save().then((response) => {
             toast.configure({
               autoClose: 2000,
@@ -209,7 +209,7 @@ class Repoted extends React.Component {
       const query = new Parse.Query(Posts);
       // here you put the objectId that you want to update
       query.get(id).then((object) => {
-        object.set('FeedsStatus', 'unpublish')
+        object.set('feedsStatus', 'unpublish')
         object.save().then((response) => {
           toast.configure({
             autoClose: 2000,
@@ -312,7 +312,7 @@ return (
                   >
                     
                     <Button size="small" variant="contained" onClick={()=>this.PublishClick(data.post.objectId)}>
-                      Mark Is Ok
+                    Allow Post
                     </Button>
                     <Button size="small" variant="contained" color="secondary" onClick={()=>this.UnpublishClick(data.post.objectId)}>
                       Unpublish Post

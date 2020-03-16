@@ -47,13 +47,6 @@ const PieChartData = [
   { name: "Group D", value: 200, color: "success" },
 ];
 
-
-const topnewsss = [
-  ["Raihan", 1,5,6,7],
-  ["hafiz", 5],
-  ["zakaria", 10],
- 
-];
 var Parse = require('parse/node');
 
 class Dashboard extends React.Component {
@@ -280,7 +273,13 @@ class Dashboard extends React.Component {
       topPost.map((data,i) =>
         [
         data.type === 'photo' || data.type ==='drama' ?
-        <img style={{ width:'100px',height:'100px' }} src={data ? data.content.url : defaltImage}/> : <img style={{width:'100px'}} src={defaltImage} />, 
+        <a target="_blank" 
+            href={"https://dbcadmin.herokuapp.com/#/post-details/" + data.objectId} >
+             <img style={{ width:'100px',height:'100px' }} src={data ? data.content.url : defaltImage}/> 
+          </a> : 
+          <a target="_blank" 
+          href={"https://dbcadmin.herokuapp.com/#/post-details/" + data.objectId} >
+          <img style={{width:'100px'}} src={defaltImage} /> </a>, 
         data.postText,
         data.likeCount,
         data.dislikeCount,
@@ -341,7 +340,7 @@ class Dashboard extends React.Component {
       <Grid container spacing={4}>
         <Grid item xs={3}>
           <div style={mystyle}>
-            <h2>Total User</h2>
+            <h2>Total Users</h2>
             <CountUp 
                 end={totaluser} 
                 duration={5.75}
@@ -352,7 +351,7 @@ class Dashboard extends React.Component {
 
         <Grid item xs={3}>
           <div style={mystyle}>
-            <h2>Total Like</h2>
+            <h2>Total Likes</h2>
             <CountUp 
                 end={likeTotal} 
                 duration={5.75}
@@ -363,7 +362,7 @@ class Dashboard extends React.Component {
 
         <Grid item xs={3}>
           <div style={mystyle}>
-            <h2>Total Dislike</h2>
+            <h2>Total Dislikes</h2>
             <CountUp 
                 end={dislikeCount} 
                 duration={5.75}
@@ -374,7 +373,7 @@ class Dashboard extends React.Component {
 
         <Grid item xs={3}>
           <div style={mystyle}>
-            <h2>Total Comment</h2>
+            <h2>Total Comments</h2>
             <CountUp 
                 end={commentCount} 
                 duration={5.75}
@@ -418,6 +417,7 @@ class Dashboard extends React.Component {
           </Grid>
 
           <Grid item xs={6}>
+            
             <MUIDataTable
               title="Recently Added User"
               data={userDataTable}

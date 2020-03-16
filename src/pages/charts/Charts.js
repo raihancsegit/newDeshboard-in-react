@@ -25,7 +25,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import NativeSelect from '@material-ui/core/NativeSelect';
-
+import moment from 'moment';
 
 
 const pieChartData = [
@@ -34,6 +34,7 @@ const pieChartData = [
   { name: "Group C", value: 300 },
   { name: "Group D", value: 200 },
 ];
+
 var Parse = require('parse/node');
 export default function Charts(props) {
   var theme = useTheme();
@@ -99,6 +100,12 @@ export default function Charts(props) {
   const [decDislike,decSetDislike] = useState(0);
   const [decComment,decSetComment] = useState(0);
   const [decShare,decSetShare] = useState(0);
+
+
+
+  const [defailtFilterValue,setFiltervalue] = useState(7)
+
+  const [sevenLine,setSevenLine] = useState([]);
 
   useEffect(() => {
     //Update the document title using the browser API
@@ -719,12 +726,13 @@ export default function Charts(props) {
     });
 
     
-    
   },[]);
-  //document.title = `You clicked ${like} times`;
    
-
+  //console.log("Seven Timezone "+ JSON.stringify(sevenLine))
+  //const Jeson = JSON.stringify(sevenLine);
+  
   const lineChartData = [
+   
     {
       name: "January",
       Like: janLike,
@@ -826,61 +834,184 @@ export default function Charts(props) {
     },
   ];
 
+
+
+  const dateLine = [
+      {
+        name:'16 th March',
+        Like: 0,
+        Dislike: 1,
+        Comment:2,
+        Share:1
+      },
+
+      {
+        name:'15 th March',
+        Like: 5,
+        Dislike: 1,
+        Comment:3,
+        Share:1
+      },
+
+      {
+        name:'14 th March',
+        Like: 0,
+        Dislike: 1,
+        Comment:5,
+        Share:1
+      },
+
+      {
+        name:'13 th March',
+        Like: 6,
+        Dislike: 1,
+        Comment:2,
+        Share:1
+      },
+      {
+        name:'12 th March',
+        Like: 0,
+        Dislike: 2,
+        Comment:2,
+        Share:1
+      },
+
+      {
+        name:'11 th March',
+        Like: 0,
+        Dislike: 3,
+        Comment:2,
+        Share:1
+      },
+
+      {
+        name:'10 th March',
+        Like: 0,
+        Dislike: 3,
+        Comment:2,
+        Share:1
+      },
+  ]
+
+  
   const handleChange = (e) => {
+
     console.log(e.target.value);
     const value = e.target.value;
    
     const MyCustomClass = Parse.Object.extend('PostAction');
     const query = new Parse.Query(MyCustomClass);
-    query.equalTo("type", "like");
+    //query.equalTo("type", "like");
     query.find().then((results) => {
       const FeedsJeson = JSON.stringify(results);
       const Feeds = JSON.parse(FeedsJeson);
-      const likeCount = Feeds.filter((data,i) => {
-        var pDate = new Date(data.createdAt);
-        var cDate = new Date();
-        var Month = cDate.getMonth();
-        //alert(Month);
-        if(Month === 2){
-          const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
-          console.log("Date Formate "+dataFormate);
-
-            if(value === 'seven'){
-              if(dataFormate < 1 ){
-                console.log("item "+ data.createdAt);
-                query.count().then(count => {
-                //if (typeof document !== 'undefined') document.write(`ParseObjects found: ${count}`);
-                  //console.log(`ParseObjects found: ${count}`);
-                  janSetLike(count);
+      const likeCount = Feeds.map((data,i) => {
+       
         
-                });
-              }
-            }
+        console.log("data "+ JSON.stringify(data));
+        //setSevenLine(data);
+        // var pDate = new Date(data.createdAt);
+        // var cDate = new Date();
+        // var Month = cDate.getMonth();
+        // //alert(Month);
+        // if(Month === 2){
+        //   const dataFormate = Math.floor((cDate - pDate) / (1000*60*60*24));
+        //   console.log("Date Formate "+dataFormate);
 
-            if(value === 'fifthen'){
-              if(dataFormate < 15 ){
-                console.log("item "+ data.createdAt);
-                query.count().then(count => {
-                //if (typeof document !== 'undefined') document.write(`ParseObjects found: ${count}`);
-                  //console.log(`ParseObjects found: ${count}`);
-                  janSetLike(count);
+        //     if(value === 'seven'){
+        //       if(dataFormate < 1 ){
+        //         console.log("item "+ data.createdAt);
+        //         query.count().then(count => {
+        //         //if (typeof document !== 'undefined') document.write(`ParseObjects found: ${count}`);
+        //           //console.log(`ParseObjects found: ${count}`);
+        //           janSetLike(count);
         
-                });
-              }
-            }
+        //         });
+        //       }
+        //     }
+
+        //     if(value === 'fifthen'){
+        //       if(dataFormate < 15 ){
+        //         console.log("item "+ data.createdAt);
+        //         query.count().then(count => {
+        //         //if (typeof document !== 'undefined') document.write(`ParseObjects found: ${count}`);
+        //           //console.log(`ParseObjects found: ${count}`);
+        //           janSetLike(count);
+        
+        //         });
+        //       }
+        //     }
 
             
             
-        }
+        // }
+
+
+
+      
         
+        var timeFrom = (X) => {
+          var dates = [];
+
+          for (let I = 0; I < Math.abs(X); I++) {
+            var formated = moment(new Date(new Date().getTime() - ((X >= 0 ? I : (I - I - I)) * 24 * 60 * 60 * 1000)).toLocaleString()).format("MMM Do");
+            const databaseDate = moment(data.createdAt).format("MMM Do");
+            
+            console.log("database date " + databaseDate);
+            let likeCounter = 0;
+            let dislikeCounter = 0;
+            let commentCounter = 0;
+            let shareCounter = 0;
+
+            //console.log("Result "+ JSON.stringify(results))
+            console.log("data "+ data.type + " "+ databaseDate)
+            if(data.type === 'dislike'){
+              dislikeCounter++;
+            }
+            
+
+            // for(let y = 0; y < results.length; y++){
+            //   const newDateformate= moment(results[y].createdAt).format("MMM Do");
+            //   console.log("newdateformate "+newDateformate);
+            //   console.log("databaseDate "+databaseDate);
+            //     if(newDateformate === databaseDate){
+            //       //console.log("Type " +JSON.stringify(results[y]).type)
+            //         if(data[y].type === 'like'){
+            //           likeCounter++;
+            //           console.log("inside")
+            //         }
+
+            //         if(data[y].type === 'dislike'){
+            //           dislikeCounter++;
+            //         }
+                    
+            //     }
+            // }
+            // console.log("likecounter "+likeCounter)
+            // console.log("dislikecounter "+dislikeCounter)
+
+            if(formated == databaseDate){
+              const count = data.type;
+            }
+
+            dates.push({ 
+              name : formated,
+              Like:0,
+              Dislike:0,
+              Comment:2,
+              Share:1
+            });
+          }
+          return dates;
+
+      }
+      
+      //console.log(timeFrom(-7)); // Future 7 Days
+      //console.log(timeFrom(7)); // Past 7 Days
+      setFiltervalue(setSevenLine(timeFrom(value)))
         
       })
 
-      // query.count().then(count => {
-      //   //if (typeof document !== 'undefined') document.write(`ParseObjects found: ${count}`);
-      //   console.log(`ParseObjects found: ${count}`);
-       
-      // });
       
     })
     
@@ -900,20 +1031,22 @@ export default function Charts(props) {
             <ApexHeatmap />
           </Widget>
         </Grid> */}
+        
         <Grid item xs={12} md={12}>
           <Widget title="User Activity Chart" noBodyPadding upperTitle>
 
               <FormControl style={{ textAlign:'right',display:'block',marginTop:'-42px',marginBottom:'24px',marginRight:'50px' }}>
                   <NativeSelect
-                    //value={state.age}
+                    value={defailtFilterValue}
                     onChange={((e) => handleChange(e))}
                     name="age"
                     //className={classes.selectEmpty}
                     inputProps={{ 'aria-label': 'age' }}
                   >
-                    <option value="">Posted On</option>
-                    <option value="seven">Last 7 days</option>
-                    <option value="fifthen">Last 15 days</option>
+                    <option value={7}>Posted On</option>
+                    <option value={7}>Last 7 days</option>
+                    <option value={15}>Last 15 days</option>
+                    <option value={30}>Last 30 days</option>
                     
                   </NativeSelect>
               </FormControl>
@@ -922,7 +1055,7 @@ export default function Charts(props) {
               <LineChart
                 width={500}
                 height={300}
-                data={lineChartData}
+                data={sevenLine}
                 margin={{
                   top: 5,
                   right: 30,
@@ -964,6 +1097,8 @@ export default function Charts(props) {
                 
               </LineChart>
             </ResponsiveContainer>
+
+
           </Widget>
         </Grid>
         {/* <Grid item xs={12} md={4}>

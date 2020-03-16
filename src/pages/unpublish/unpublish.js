@@ -265,7 +265,7 @@ return (
                   spacing={50}
                 >
                   <Button size="large" variant="contained" color="primary" onClick={()=>this.PublishClick(data.post.objectId) } fullWidth>
-                     Published ?
+                     Publish Post?
                     </Button>
                 </Grid>
                 

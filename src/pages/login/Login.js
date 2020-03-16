@@ -42,7 +42,7 @@ function Login(props) {
   var [forgetPassword,setForgetPassword] = useState("");
 
   const fogetPassord = () => {
-      console.log(forgetPassword)
+      //console.log(forgetPassword)
       var email = forgetPassword;
       Parse.User.requestPasswordReset(email).then(() => {
         // Password reset request was sent successfully

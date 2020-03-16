@@ -266,7 +266,7 @@ return (
                   spacing={50}
                 >
                   <Button size="large" variant="contained" color="secondary" onClick={()=>this.UnblishClick(data.post.objectId) } fullWidth>
-                     Unublished ?
+                     Unpublish Post?
                     </Button>
                 </Grid>
                 

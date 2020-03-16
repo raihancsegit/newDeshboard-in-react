@@ -131,7 +131,19 @@ class Feeds extends React.Component {
       Feeds.map((data,i) =>
         
         [
-          data.type === 'photo' || data.type ==='drama' ? <img style={{width:'100px',height:'80px'}} src={data.content ? data.content.url : defaltImage} /> : <img style={{width:'100px',height:'80px'}} src={defaltImage} />,data.type,data.postText ? data.postText.substr(0,100):data.postText,data.dislikeCount,data.likeCount,data.commentCount,
+          data.type === 'photo' || data.type ==='drama' ? 
+          <a target="_blank" 
+            href={"https://dbcadmin.herokuapp.com/#/post-details/" + data.objectId} >
+          <img style={{width:'100px',height:'80px'}} src={data.content ? data.content.url : defaltImage} /></a>
+          : 
+          <a target="_blank" 
+            href={"https://dbcadmin.herokuapp.com/#/post-details/" + data.objectId} >
+          <img style={{width:'100px',height:'80px'}} src={defaltImage} /></a>,
+          data.type,
+          data.postText ? data.postText.substr(0,100):data.postText,
+          data.dislikeCount,
+          data.likeCount,
+          data.commentCount,
           //console.log(data.content),
           localStorage.getItem('userType') === 'admin' ? (
           <Select
