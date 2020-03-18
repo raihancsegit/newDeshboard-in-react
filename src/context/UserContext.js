@@ -63,7 +63,7 @@ function loginUser(dispatch, login, password, history,setError) {
       localStorage.setItem('user', user.get("name"))
       localStorage.setItem('userEmail', user.get("email"))
       localStorage.setItem('userType', user.get("userType"))
-
+      localStorage.setItem('isBan', user.get("isUserBan"))
       
       localStorage.setItem('userAvatar', JSON.stringify(user.get("photo")))
 
@@ -73,7 +73,10 @@ function loginUser(dispatch, login, password, history,setError) {
 
          //alert(localStorage.getItem('userType'));
 
-      if(localStorage.getItem('userType') === 'admin' || localStorage.getItem('userType') === 'moderator'){
+      if(localStorage.getItem('userType') === 'admin' || localStorage.getItem('userType') === 'moderator')  {
+       //alert(localStorage.getItem('isBan'))
+       if(localStorage.getItem('isBan') == 'true')
+       {
 
         if (!!login && !!password) {
           setTimeout(() => {
@@ -108,6 +111,20 @@ function loginUser(dispatch, login, password, history,setError) {
           history.push('/login')
         }
 
+       }else{
+
+        toast.configure({
+          autoClose: 2000,
+          draggable: false,
+          //etc you get the idea
+        });
+        toast("Your Account is Deactive");
+        localStorage.removeItem("id_token");
+        dispatch({ type: "SIGN_OUT_SUCCESS" });
+        history.push("/login"); 
+
+       }
+        
       }else{
           toast.configure({
             autoClose: 2000,
