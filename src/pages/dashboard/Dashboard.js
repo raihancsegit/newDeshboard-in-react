@@ -219,10 +219,10 @@ class Dashboard extends React.Component {
        }
      })
 
-    console.log({
-      Post,
-       UniqueFeeds
-     })
+    // console.log({
+    //   Post,
+    //    UniqueFeeds
+    //  })
 
        this.setState({
          ...this.state,
